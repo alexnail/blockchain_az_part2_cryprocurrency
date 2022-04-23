@@ -1,6 +1,7 @@
 package com.alexnail.blockchain.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
@@ -14,4 +15,6 @@ public class Block {
     private long proof;
 
     private String previousHash;
+
+    private List<Transaction> transactions;
 }

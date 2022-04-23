@@ -1,20 +1,25 @@
 package com.alexnail.blockchain.services;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.alexnail.blockchain.models.Block;
+import com.alexnail.blockchain.models.Transaction;
 import com.google.common.hash.Hashing;
 
 @Service
 public class BlockchainService {
 
     private final List<Block> chain = new ArrayList<>();
+
+    private final List<Transaction> transactions = new ArrayList<>();
 
     public BlockchainService() {
         chain.add(createBlock(1, "0"));
@@ -58,7 +63,14 @@ public class BlockchainService {
         block.setTimestamp(LocalDateTime.now());
         block.setProof(proof);
         block.setPreviousHash(previousHash);
+        block.setTransactions(Collections.unmodifiableList(transactions));
+        transactions.clear();
         return block;
+    }
+
+    private long addTransaction(String sender, String receiver, BigDecimal amount) {
+        transactions.add(new Transaction(sender, receiver, amount));
+        return getPreviousBlock().getIndex() + 1;
     }
 
     public Collection<Block> getChain() {
